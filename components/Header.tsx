@@ -152,6 +152,7 @@
 
 "use client";
 
+import FluidBackground from "@/components/FluidBackground";
 import { Button } from "@/components/ui/button";
 import { Notches } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -181,6 +182,7 @@ export default function Header() {
               </div> */}
               <span>Trvux</span>
             </Link>
+            <FluidBackground />
           </div>
 
           {/* Menu Desktop */}
