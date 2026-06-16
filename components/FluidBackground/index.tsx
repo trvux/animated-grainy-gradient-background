@@ -2,6 +2,8 @@
 
 "use client";
 
+import { cn } from "@/lib/utils";
+import { DotsSix, Eye, EyeSlash } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FRAGMENT_SHADER, VERTEX_SHADER } from "./shaders";
@@ -142,13 +144,8 @@ export default function FluidBackground() {
   const [colors, setColors] = useState<ColorStop[]>(
     DEFAULT_COLORS.map((c) => ({ ...c })),
   );
-  // Start at 0,0 - SSR safe. Real position set in useEffect.
-  const [panelPos, setPanelPos] = useState<PanelPos>({ x: 0, y: 0 });
-
-  // ── Initial panel position (client-side only) ──────────────────────────
-  useEffect(() => {
-    setPanelPos({ x: window.innerWidth - 278, y: 0 });
-  }, []);
+  // Drag position - null means "use fixed right-10 top-10 anchor"
+  const [panelPos, setPanelPos] = useState<PanelPos | null>(null);
 
   // ── Drag logic (pointer events on dots handle only) ──────────────────────
   const dragStateRef = useRef<{ active: boolean; ox: number; oy: number }>({
@@ -162,10 +159,18 @@ export default function FluidBackground() {
       if (e.button !== 0) return;
       e.preventDefault();
       e.currentTarget.setPointerCapture(e.pointerId);
+      // Compute current panel position from the element itself
+      const rect = e.currentTarget
+        .closest<HTMLElement>("[data-panel]")
+        ?.getBoundingClientRect();
+      const currentX = rect
+        ? rect.left
+        : (panelPos?.x ?? window.innerWidth - 278);
+      const currentY = rect ? rect.top : (panelPos?.y ?? 0);
       dragStateRef.current = {
         active: true,
-        ox: e.clientX - panelPos.x,
-        oy: e.clientY - panelPos.y,
+        ox: e.clientX - currentX,
+        oy: e.clientY - currentY,
       };
     },
     [panelPos],
@@ -173,10 +178,8 @@ export default function FluidBackground() {
 
   const onHeaderPointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      // Guard: only move if button is held AND we activated drag via pointerDown
       if (!dragStateRef.current.active) return;
       if (!(e.buttons & 1)) {
-        // Button was released without pointerUp firing - cancel drag
         dragStateRef.current.active = false;
         return;
       }
@@ -398,6 +401,17 @@ export default function FluidBackground() {
   }, []);
 
   // ── Render ───────────────────────────────────────────────────────────────
+
+  // Panel positioning: dragged position takes priority, else fixed right-10 top-10
+  const panelStyle = panelPos
+    ? {
+        position: "fixed" as const,
+        left: panelPos.x,
+        top: panelPos.y,
+        right: "auto",
+      }
+    : {};
+
   return (
     <>
       <motion.div
@@ -412,35 +426,25 @@ export default function FluidBackground() {
 
       {/* ── Debug Panel (draggable) ── */}
       <div
-        style={{
-          position: "fixed",
-          left: panelPos.x,
-          top: panelPos.y,
-          zIndex: 9999,
-          width: "268px",
-          background: "rgba(14,14,18,0.94)",
-          backdropFilter: "blur(16px)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: "10px",
-          fontFamily: "'SF Mono', 'Fira Code', monospace",
-          fontSize: "11px",
-          color: "#c8c8cc",
-          userSelect: "none",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
-        }}
+        data-panel
+        style={panelStyle}
+        className={cn(
+          "z-[9999] w-[268px]",
+          "bg-[rgba(14,14,18,0.94)] backdrop-blur-[16px]",
+          "border border-white/[0.08] rounded-[10px]",
+          "font-mono text-[11px] text-[#c8c8cc]",
+          "select-none shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+          !panelPos && "fixed right-2 top-2",
+        )}
       >
         {/* Header */}
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "9px 8px 9px 10px",
-            borderBottom: showPanel
-              ? "1px solid rgba(255,255,255,0.07)"
-              : "none",
-            borderRadius: showPanel ? "10px 10px 0 0" : "10px",
-          }}
+          className={cn(
+            "flex items-center justify-between px-2 py-[9px] pl-[10px]",
+            showPanel
+              ? "border-b border-white/[0.07] rounded-t-[10px]"
+              : "rounded-[10px]",
+          )}
         >
           {/* Drag handle - ONLY this zone triggers drag */}
           <div
@@ -448,41 +452,17 @@ export default function FluidBackground() {
             onPointerMove={onHeaderPointerMove}
             onPointerUp={onHeaderPointerUp}
             title="Drag to move"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 4px)",
-              gridTemplateRows: "repeat(2, 4px)",
-              gap: "3px",
-              padding: "4px",
-              cursor: "grab",
-              borderRadius: "4px",
-              flexShrink: 0,
-            }}
+            className="grid grid-cols-3 grid-rows-2 gap-[3px] p-1 cursor-grab rounded shrink-0"
           >
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  width: 3,
-                  height: 3,
-                  borderRadius: "50%",
-                  background: "rgba(255,255,255,0.3)",
-                }}
-              />
-            ))}
+            <DotsSix
+              size={16}
+              weight="bold"
+              className="text-white/30 col-span-3 row-span-2"
+            />
           </div>
 
           {/* Title */}
-          <span
-            style={{
-              color: "#5787f7",
-              fontWeight: 600,
-              letterSpacing: "0.06em",
-              fontSize: "10px",
-              flex: 1,
-              textAlign: "center",
-            }}
-          >
+          <span className="flex-1 text-center text-[#5787f7] font-semibold tracking-[0.06em] text-[10px] uppercase">
             SHADER PARAMS
           </span>
 
@@ -490,58 +470,17 @@ export default function FluidBackground() {
           <button
             onClick={() => setShowPanel((v) => !v)}
             title={showPanel ? "Collapse panel" : "Expand panel"}
-            style={{
-              background: "none",
-              border: "none",
-              padding: "4px 5px",
-              cursor: "pointer",
-              color: "#444",
-              fontSize: "12px",
-              lineHeight: 1,
-              borderRadius: "4px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              transition: "color 0.15s",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = "#aaa";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = "#444";
-            }}
+            className={cn(
+              "flex items-center justify-center shrink-0",
+              "bg-transparent border-none p-[4px_5px] cursor-pointer",
+              "text-[#444] text-xs leading-none rounded",
+              "transition-colors duration-150 hover:text-[#aaa]",
+            )}
           >
             {showPanel ? (
-              // Eye-open SVG
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
+              <Eye size={14} weight="regular" />
             ) : (
-              // Eye-off SVG
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                <line x1="1" y1="1" x2="23" y2="23" />
-              </svg>
+              <EyeSlash size={14} weight="regular" />
             )}
           </button>
         </div>
@@ -549,32 +488,19 @@ export default function FluidBackground() {
         {showPanel && (
           <div>
             {/* Tabs */}
-            <div
-              style={{
-                display: "flex",
-                borderBottom: "1px solid rgba(255,255,255,0.07)",
-              }}
-            >
+            <div className="flex border-b border-white/[0.07]">
               {(["params", "colors"] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  style={{
-                    flex: 1,
-                    padding: "6px 0",
-                    background: "none",
-                    border: "none",
-                    borderBottom:
-                      activeTab === tab
-                        ? "2px solid #5787f7"
-                        : "2px solid transparent",
-                    color: activeTab === tab ? "#5787f7" : "#555",
-                    fontFamily: "inherit",
-                    fontSize: "10px",
-                    letterSpacing: "0.06em",
-                    cursor: "pointer",
-                    textTransform: "uppercase",
-                  }}
+                  className={cn(
+                    "flex-1 py-[6px]",
+                    "bg-transparent border-none font-mono text-[10px] tracking-[0.06em] uppercase cursor-pointer",
+                    "border-b-2 transition-colors duration-150",
+                    activeTab === tab
+                      ? "border-[#5787f7] text-[#5787f7]"
+                      : "border-transparent text-[#555]",
+                  )}
                 >
                   {tab}
                 </button>
@@ -583,32 +509,14 @@ export default function FluidBackground() {
 
             {/* ── Params tab ── */}
             {activeTab === "params" && (
-              <div
-                style={{
-                  padding: "8px 0 10px",
-                  maxHeight: "60vh",
-                  overflowY: "auto",
-                }}
-              >
+              <div className="py-2 pb-2 max-h-[70vh] overflow-y-auto">
                 {SLIDER_CONFIGS.map(({ key, label, min, max, step }) => {
                   const value = params[key];
                   return (
-                    <div key={key} style={{ padding: "4px 12px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: "3px",
-                        }}
-                      >
-                        <span style={{ color: "#919195" }}>{label}</span>
-                        <span
-                          style={{
-                            color: "#e0e0e6",
-                            minWidth: "36px",
-                            textAlign: "right",
-                          }}
-                        >
+                    <div key={key} className="px-3 py-1">
+                      <div className="flex justify-between mb-[3px]">
+                        <span className="text-[#919195]">{label}</span>
+                        <span className="text-[#e0e0e6] min-w-[36px] text-right">
                           {Number(value).toFixed(
                             step >= 1
                               ? 0
@@ -629,12 +537,7 @@ export default function FluidBackground() {
                         onChange={(e) =>
                           handleSlider(key, parseFloat(e.target.value))
                         }
-                        style={{
-                          width: "100%",
-                          accentColor: "#5787f7",
-                          cursor: "pointer",
-                          height: "3px",
-                        }}
+                        className="w-full cursor-pointer h-[3px] accent-[#5787f7]"
                       />
                     </div>
                   );
@@ -644,58 +547,28 @@ export default function FluidBackground() {
 
             {/* ── Colors tab ── */}
             {activeTab === "colors" && (
-              <div style={{ padding: "10px 12px 12px" }}>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "8px",
-                  }}
-                >
+              <div className="p-[10px_12px_12px]">
+                <div className="grid grid-cols-2 gap-2">
                   {colors.map((color, idx) => {
                     const hex = colorToHex(color);
                     return (
-                      <div
-                        key={idx}
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "4px",
-                        }}
-                      >
-                        <span style={{ color: "#555", fontSize: "10px" }}>
+                      <div key={idx} className="flex flex-col gap-1">
+                        <span className="text-[#555] text-[10px]">
                           color {idx + 1}
                         </span>
                         <label
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "6px",
-                            background: "rgba(255,255,255,0.04)",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                            borderRadius: "6px",
-                            padding: "5px 8px",
-                            cursor: "pointer",
-                          }}
+                          className={cn(
+                            "flex items-center gap-[6px]",
+                            "bg-white/[0.04] border border-white/[0.08] rounded-md",
+                            "px-2 py-[5px] cursor-pointer",
+                          )}
                         >
                           {/* Color swatch */}
                           <div
-                            style={{
-                              width: 18,
-                              height: 18,
-                              borderRadius: "4px",
-                              background: hex,
-                              border: "1px solid rgba(255,255,255,0.15)",
-                              flexShrink: 0,
-                            }}
+                            className="w-[18px] h-[18px] rounded shrink-0 border border-white/15"
+                            style={{ background: hex }}
                           />
-                          <span
-                            style={{
-                              color: "#919195",
-                              fontSize: "10px",
-                              flex: 1,
-                            }}
-                          >
+                          <span className="text-[#919195] text-[10px] flex-1">
                             {hex.toUpperCase()}
                           </span>
                           <input
@@ -704,13 +577,7 @@ export default function FluidBackground() {
                             onChange={(e) =>
                               handleColorChange(idx, e.target.value)
                             }
-                            style={{
-                              position: "absolute",
-                              opacity: 0,
-                              width: 0,
-                              height: 0,
-                              pointerEvents: "none",
-                            }}
+                            className="absolute opacity-0 w-0 h-0 pointer-events-none"
                           />
                         </label>
                         {/* Separate visible color input */}
@@ -720,15 +587,7 @@ export default function FluidBackground() {
                           onChange={(e) =>
                             handleColorChange(idx, e.target.value)
                           }
-                          style={{
-                            width: "100%",
-                            height: "24px",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                            background: "none",
-                            padding: 0,
-                          }}
+                          className="w-full h-6 border-none rounded cursor-pointer bg-transparent p-0"
                         />
                       </div>
                     );
@@ -738,21 +597,15 @@ export default function FluidBackground() {
             )}
 
             {/* Reset */}
-            <div style={{ padding: "2px 12px 10px" }}>
+            <div className="px-3 pb-[10px] pt-[2px]">
               <button
                 onClick={handleReset}
-                style={{
-                  width: "100%",
-                  padding: "5px 0",
-                  background: "rgba(87,135,247,0.1)",
-                  border: "1px solid rgba(87,135,247,0.25)",
-                  borderRadius: "5px",
-                  color: "#5787f7",
-                  fontSize: "10px",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  letterSpacing: "0.06em",
-                }}
+                className={cn(
+                  "w-full py-[5px]",
+                  "bg-[rgba(87,135,247,0.1)] border border-[rgba(87,135,247,0.25)] rounded-[5px]",
+                  "text-[#5787f7] text-[10px] cursor-pointer font-mono tracking-[0.06em]",
+                  "transition-colors duration-150 hover:bg-[rgba(87,135,247,0.18)]",
+                )}
               >
                 reset to reference
               </button>
