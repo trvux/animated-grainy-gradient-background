@@ -1031,8 +1031,8 @@ export default function FluidBackground() {
           "font-mono text-xs text-foreground",
           "select-none shadow-xl",
           !panelPos &&
-            // "fixed top-22 right-5 md:top-20 md:right-6 lg:top-20 lg:right-8 xl:top-20 xl:right-24 2xl:right-2 2xl:top-5",
-            "absolute top-16 right-4 sm:right-6 lg:right-8",
+            "fixed top-22 right-5 md:top-20 md:right-6 lg:top-20 lg:right-8 xl:top-20 xl:right-24 2xl:right-2 2xl:top-5",
+          // "absolute top-16 right-4 sm:right-6 lg:right-8",
         )}
       >
         {/* Header */}

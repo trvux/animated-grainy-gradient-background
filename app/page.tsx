@@ -23,7 +23,7 @@
 // [src/app/page.tsx]
 "use client";
 
-// import FluidBackground from "@/components/FluidBackground";
+import FluidBackground from "@/components/FluidBackground";
 import { Button } from "@/components/ui/button";
 import { GithubLogo, MediumLogo, Star } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <main className="relative text-white font-sans overflow-x-hidden min-h-screen">
       {/* Background chạy bằng WebGL Shader siêu mượt và Framer Motion fade-in */}
-      {/* <FluidBackground /> */}
+      <FluidBackground />
 
       {/* Content đè lên trên background fixed */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 md:px-6 text-center max-w-5xl mx-auto select-none">
