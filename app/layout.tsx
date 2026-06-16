@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Noto_Serif } from "next/font/google";
@@ -59,7 +60,8 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-screen bg-background font-sans antialiased">
-        {children}
+        <Header />
+        <main>{children}</main>
       </body>
     </html>
   );

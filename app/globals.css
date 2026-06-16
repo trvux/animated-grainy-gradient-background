@@ -133,36 +133,30 @@
 
 
 
-/* input[type=range] {
-          -webkit-appearance: none;
-          background: rgba(255,255,255,0.1);
-          border-radius: 3px;
-          outline: none;
-        }
-        input[type=range]::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #5787f7;
-          cursor: pointer;
-          box-shadow: 0 0 4px rgba(87,135,247,0.5);
-        }
-        input[type=range]::-moz-range-thumb {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #5787f7;
-          cursor: pointer;
-          border: none;
-        }
-        input[type=color] {
-          -webkit-appearance: none;
-        }
-        input[type=color]::-webkit-color-swatch-wrapper {
-          padding: 0;
-        }
-        input[type=color]::-webkit-color-swatch {
-          border: none;
-          border-radius: 4px;
-        } */
+@keyframes notches-bounce {
+  0%, 100% { 
+    gap: 4px;            /* Khoảng cách mặc định lúc đứng yên */
+    transform: scaleX(1); 
+  }
+  25% { 
+    gap: 1px;            /* Ép sát gần như chạm nhau */
+    transform: scaleX(0.95); 
+  }
+  45% { 
+    gap: 7px;            /* Bung ra xa vừa phải (không bị quá đà) */
+    transform: scaleX(1.05); 
+  }
+  65% { 
+    gap: 3px;            /* Nẩy nhẹ vào trong */
+    transform: scaleX(0.98); 
+  }
+  80% { 
+    gap: 5px;            /* Nẩy nhẹ ra ngoài */
+    transform: scaleX(1.02); 
+  }
+}
+
+/* Giữ nguyên class custom */
+.animate-notches {
+  animation: notches-bounce 2s ease-in-out infinite;
+}

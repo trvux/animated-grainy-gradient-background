@@ -1025,12 +1025,13 @@ export default function FluidBackground() {
         data-panel
         style={panelStyle}
         className={cn(
-          "dark z-50 w-67",
+          "dark z-40 w-67",
           "bg-card/95 backdrop-blur-lg",
           "border border-border rounded-lg",
           "font-mono text-xs text-foreground",
           "select-none shadow-xl",
-          !panelPos && "fixed right-2 top-2",
+          !panelPos &&
+            "fixed top-22 right-5 md:top-20 md:right-6 lg:right-2 lg:top-5",
         )}
       >
         {/* Header */}
