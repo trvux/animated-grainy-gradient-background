@@ -43,8 +43,8 @@ export default function Home() {
               <Star key={i} weight="fill" />
             ))}
           </div>
-          <span className="text-sm font-medium text-slate-300">
-            Optimized for 60 FPS performance — Tranvux
+          <span className="text-xs md:text-sm font-medium text-slate-300">
+            Fluid Noise Gradient — Tranvux
           </span>
         </div>
 
