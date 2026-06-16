@@ -135,7 +135,7 @@
 
 @keyframes notches-bounce {
   0%, 100% { 
-    gap: 4px;            /* Khoảng cách mặc định lúc đứng yên */
+    gap: 3px;            /* Khoảng cách mặc định lúc đứng yên */
     transform: scaleX(1); 
   }
   25% { 
@@ -143,15 +143,15 @@
     transform: scaleX(0.95); 
   }
   45% { 
-    gap: 7px;            /* Bung ra xa vừa phải (không bị quá đà) */
+    gap: 6px;            /* Bung ra xa vừa phải (không bị quá đà) */
     transform: scaleX(1.05); 
   }
   65% { 
-    gap: 3px;            /* Nẩy nhẹ vào trong */
+    gap: 2px;            /* Nẩy nhẹ vào trong */
     transform: scaleX(0.98); 
   }
   80% { 
-    gap: 5px;            /* Nẩy nhẹ ra ngoài */
+    gap: 4px;            /* Nẩy nhẹ ra ngoài */
     transform: scaleX(1.02); 
   }
 }
