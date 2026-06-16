@@ -138,7 +138,7 @@ export default function FluidBackground() {
   const colorsRef = useRef<ColorStop[]>(DEFAULT_COLORS.map((c) => ({ ...c })));
 
   const [isReady, setIsReady] = useState<boolean>(false);
-  const [showPanel, setShowPanel] = useState<boolean>(true);
+  const [showPanel, setShowPanel] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"params" | "colors">("params");
   const [params, setParams] = useState<ShaderParams>({ ...DEFAULT_PARAMS });
   const [colors, setColors] = useState<ColorStop[]>(
