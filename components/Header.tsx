@@ -153,6 +153,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Notches } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -162,7 +163,7 @@ export default function Header() {
   return (
     <div className="dark fixed top-4 inset-x-0 z-50 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 font-sans">
       {/* HEADER CONTAINER: transition-all duration-500 giúp toàn bộ khung co giãn mượt mà */}
-      <header className="bg-muted md:bg-background/10 text-foreground w-full rounded-xl border border-border/10 md:backdrop-blur-sm transition-all duration-500 ease-in-out overflow-hidden">
+      <header className="bg-muted md:bg-background/40 text-foreground w-full rounded-xl border border-border/20  transition-all duration-500 ease-in-out overflow-hidden">
         {/* Thanh Topbar cố định */}
         <div className="flex h-fit items-center justify-between px-6 py-4 md:py-2">
           {/* Logo */}
@@ -170,14 +171,14 @@ export default function Header() {
             <Link
               href="/"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-1.5 hover:text-blue-500 transition-colors"
+              className="flex items-center gap-1.5 hover:text-foreground/70 transition-colors"
             >
-              {/* <Notches size={18} weight="bold" className="animate-pulse" /> */}
+              <Notches size={20} weight="bold" />
               {/* Dùng class animate-notches tự định nghĩa ở file global.css */}
-              <div className="flex items-center justify-center h-4.5 animate-notches rotate-210">
+              {/* <div className="flex items-center justify-center h-4.5 animate-notches rotate-210">
                 <div className="h-3 w-[2.5px] bg-current rounded-full" />
                 <div className="h-full w-[2.5px] bg-current rounded-full" />
-              </div>
+              </div> */}
               <span>Trvux</span>
             </Link>
           </div>
