@@ -615,6 +615,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area"; // 1. Import ScrollArea
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { DotsSix, Eye, EyeSlash } from "@phosphor-icons/react";
@@ -1054,7 +1055,6 @@ export default function FluidBackground() {
           </div>
 
           <span className="flex-1 text-center text-foreground font-semibold tracking-wide text-xs capitalize">
-            {/* SHADER PARAMS */}
             background effects
           </span>
 
@@ -1091,8 +1091,17 @@ export default function FluidBackground() {
               ))}
             </div>
 
+            {/* ── Params tab ── */}
             {activeTab === "params" && (
-              <div className="py-2 pb-2 max-h-screen overflow-y-auto">
+              /* Sử dụng ScrollArea của Shadcn để giới hạn chiều cao tối đa (ví dụ: h-72) */
+              /* Lớp CSS [&::-webkit-scrollbar]:hidden, [scrollbar-width]:none,... giúp ẩn thanh cuộn */
+              <ScrollArea
+                className={cn(
+                  "h-72 w-full py-2 pb-2",
+                  "[&>div>div]:!block", // Đảm bảo layout bên trong ScrollArea không bị lỗi flexbox
+                  "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
+                )}
+              >
                 {SLIDER_CONFIGS.map(({ key, label, min, max, step }) => {
                   const value = params[key];
                   return (
@@ -1122,7 +1131,7 @@ export default function FluidBackground() {
                     </div>
                   );
                 })}
-              </div>
+              </ScrollArea>
             )}
 
             {/* ── Colors tab ── */}
