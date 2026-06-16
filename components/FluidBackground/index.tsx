@@ -1031,7 +1031,7 @@ export default function FluidBackground() {
           "font-mono text-xs text-foreground",
           "select-none shadow-xl",
           !panelPos &&
-            "fixed top-22 right-5 md:top-20 md:right-6 lg:right-2 lg:top-5",
+            "fixed top-22 right-5 md:top-20 md:right-6 lg:top-20 lg:right-8 xl:right-2 xl:top-5",
         )}
       >
         {/* Header */}
@@ -1098,7 +1098,7 @@ export default function FluidBackground() {
               /* Lớp CSS [&::-webkit-scrollbar]:hidden, [scrollbar-width]:none,... giúp ẩn thanh cuộn */
               <ScrollArea
                 className={cn(
-                  "h-72 w-full py-2 pb-2",
+                  "h-72 md:h-fit w-full py-2 pb-2",
                   "[&>div>div]:!block", // Đảm bảo layout bên trong ScrollArea không bị lỗi flexbox
                   "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
                 )}
