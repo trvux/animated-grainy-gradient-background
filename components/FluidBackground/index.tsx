@@ -2842,7 +2842,7 @@ export default function FluidBackground() {
           ref={canvasRef}
           className="absolute inset-0 w-full h-full block object-cover"
         />
-        <div className="absolute inset-0 bg-black/10" />
+        <div className="absolute inset-0 bg-black/30" />
       </motion.div>
 
       {/* Debug Panel điều khiển: Nổi z-30 và mở lại pointer-events-auto để click/drag */}
