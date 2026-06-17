@@ -21,9 +21,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ui\\trvux",
+  title: "Grainy - trvux/ui",
   description:
-    "Explore production-ready, high-performance WebGL canvas shaders. Get dynamic fluid noise and animated mesh gradients optimized for 60 FPS interfaces.",
+    "A production-ready Next.js template with interactive grainy noise mesh gradients. Fully customizable and ready to deploy. Start here, make it your own, and launch in minutes.",
   keywords: [
     "WebGL shaders",
     "mesh gradient",
