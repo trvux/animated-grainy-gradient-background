@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="border-t border-white/5 bg-black text-neutral-500 font-sans text-xs">
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-1.5 font-medium text-neutral-400">
-          <span>/ / Trvux</span>
+          <span>Trvux</span>
           <span className="text-neutral-600 font-light">
             © 2026 All rights reserved.
           </span>
