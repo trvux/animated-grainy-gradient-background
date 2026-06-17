@@ -38,6 +38,9 @@ export const metadata: Metadata = {
       "Explore production-ready, high-performance WebGL canvas shaders.",
     type: "website",
   },
+  verification: {
+    google: "ponuQUqXgwJ_xMwYUr6es897rZ0mKjBAeE-GQEM0Eh0",
+  },
 };
 
 export default function RootLayout({
