@@ -2,7 +2,7 @@
 
 import FluidBackground from "@/components/FluidBackground";
 import { Button } from "@/components/ui/button";
-import { GithubLogo, MediumLogo, Star } from "@phosphor-icons/react";
+import { GithubLogo, MediumLogo, Package } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function HeroSection() {
@@ -15,11 +15,11 @@ export default function HeroSection() {
         {/* Rating Stars */}
         <div className="flex items-center gap-2 mb-6">
           <div className="flex items-center gap-0.5">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} weight="fill" className="text-white w-4 h-4" />
+            {[...Array(1)].map((_, i) => (
+              <Package key={i} weight="bold" className="text-foreground " />
             ))}
           </div>
-          <span className="text-xs md:text-sm font-medium text-slate-300">
+          <span className="text-xs md:text-sm font-medium text-foreground">
             Fluid Noise Gradient — Tranvux
           </span>
         </div>
