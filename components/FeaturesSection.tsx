@@ -6,7 +6,7 @@ export default function FeaturesSection() {
   const features = [
     {
       icon: <Lightning className="w-6 h-6 text-foreground" />, // Ăn theo biến màu chữ hệ thống
-      title: "60 FPS Performance",
+      title: "120 FPS Performance",
       description:
         "Engineered with native WebGL2 pipelines, ensuring silky-smooth frame rates without choking the main thread.",
       className: "md:col-span-2",
